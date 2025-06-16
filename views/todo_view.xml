@@ -4,12 +4,13 @@
         <field name="name">todo list</field>
         <field name="model">todo.task</field>
         <field name="arch" type="xml">
-            <list>
+            <list decoration-danger="(is_late)">
                 <field name="name"/>
                 <field name="assign_to_id"/>
                 <field name="description"/>
                 <field name="due_date"/>
                 <field name="status"/>
+                <field name="is_late" invisible="1"/>
             </list>
         </field>
     </record>
@@ -38,7 +39,19 @@
                             <field name="description"/>
                             <field name="due_date"/>
                             <field name="status"/>
+                            <field name="estimated_time"/>
                         </group>
+                        <notebook>
+                            <page string="Timesheet">
+                                <field name="todo_line_ids" mode="list" context="{}">
+                                    <list editable="bottom">
+                                        <field name="date"/>
+                                        <field name="description"/>
+                                        <field name="working_time"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
                         <group>
                         </group>
                     </group>
@@ -63,6 +76,25 @@
                 <filter name="due_date" string="Due Date" context="{'group_by':'due_date'}"/>
             </search>
         </field>
+    </record>
+
+    <record id="todo_change_state_server_action" model="ir.actions.server">
+        <field name="name">Closed</field>
+        <field name="model_id" ref="model_todo_task"/>
+        <field name="binding_model_id" ref="model_todo_task"/>
+        <field name="state">code</field>
+        <field name="code">
+            action = records.status_closed()
+        </field>
+    </record>
+
+    <record id="todo_due_date_check_cron" model="ir.cron">
+        <field name="name">check due date</field>
+        <field name="model_id" ref="model_todo_task"/>
+        <field name="state">code</field>
+        <field name="code">model.check_due_date()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
     </record>
 
     <record id="todo_action" model="ir.actions.act_window">
