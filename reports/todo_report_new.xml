@@ -1,16 +1,68 @@
 <odoo>
+    <record id="paperformat_survey_certification" model="report.paperformat">
+        <field name="name">Survey Certification</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">20</field>
+        <field name="margin_bottom">20</field>
+        <field name="margin_left">15</field>
+        <field name="margin_right">15</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">10</field>
+        <field name="disable_shrinking" eval="True"/>
+        <field name="dpi">90</field>
+    </record>
+
     <record id="todo_report" model="ir.actions.report">
         <field name="name">ToDo Report</field>
         <field name="model">todo.task</field>
         <field name="binding_model_id" ref="model_todo_task"/>
         <field name="binding_type">report</field>
-        <field name="report_type">qweb-html</field>
+        <field name="report_type">qweb-pdf</field>
         <field name="report_name">todo_task.todo_report_template</field>
+        <field name="paperformat_id" ref="todo_task.paperformat_survey_certification"/>
     </record>
+
+    <template id="todo_custom_layout">
+        <div class="header">
+            <div style="border-bottom: 1px solid #000; padding-bottom: 10px;">
+                <!--                <t t-set="employee" t-value="o.assign_to_id"/>-->
+                <!--                <t t-if="employee.company_id.logo">-->
+                <!--                    <img t-att-src="image_data_uri(employee.company_id.logo)"-->
+                <!--                         style="max-height: 40pt; max-width: 100%;" alt="Company Logo"/>-->
+                <!--                </t>-->
+                <!--                <t t-if="not employee.company_id.logo">-->
+                <!--                    <strong>Moamen Company</strong>-->
+                <!--                </t>-->
+                <img src="/todo_task/static/src/img/logo.png"
+                     style="max-height: 40pt; max-width: 100%;" alt="Company Logo"/>
+                <br/>
+                Alexandria, Egypt
+                <br/>
+                0111444888
+            </div>
+        </div>
+
+        <div class="article">
+            <t t-out="0"/>
+        </div>
+
+        <div class="footer">
+            <div style="border-top: 1px solid #000; padding-top: 10px; width: 100%; display: flex; justify-content: space-between;">
+                <span>moamencompany@gmail.com, 0111444888, register number</span>
+                <span>Page
+                    <span class="page"/>
+                    /
+                    <span class="topage"/>
+                </span>
+            </div>
+        </div>
+    </template>
 
     <template id="todo_report_template">
         <t t-call="web.html_container">
-            <t t-call="web.basic_layout">
+            <t t-call="todo_task.todo_custom_layout">
                 <t t-foreach="docs" t-as="o">
                     <div class="page">
                         <style>
@@ -39,15 +91,7 @@
                             text-align: center;
                             }
                         </style>
-                        <div class="header">
-                            <div style="border-bottom: 1px solid #000; padding-bottom: 10px;">
-                                <strong>Moamen Company</strong>
-                                <br/>
-                                Alexandria, Egypt
-                                <br/>
-                                0111444888
-                            </div>
-                        </div>
+
                         <div class="row mt-4">
                             <div class="col-6">
                                 <strong>Task:
@@ -120,16 +164,7 @@
                             </tfoot>
                         </table>
                         <br/>
-                        <div class="footer">
-                            <div style="border-top: 1px solid #000; padding-top: 10px; width: 100%; display: flex; justify-content: space-between;">
-                                <span>moamencompany@gmail.com, 0111444888, register number</span>
-                                <span>Page
-                                    <span class="page"/>
-                                    /
-                                    <span class="topage"/>
-                                </span>
-                            </div>
-                        </div>
+
                     </div>
                 </t>
             </t>
