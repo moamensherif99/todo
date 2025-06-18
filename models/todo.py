@@ -15,11 +15,12 @@ class ToDo(models.Model):
         ('new', 'New'),
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
-        ('closed','Closed')
+        ('closed', 'Closed')
     ])
     estimated_time = fields.Float()
     todo_line_ids = fields.One2many('todo.line','todo_id')
     is_late = fields.Boolean()
+    ref = fields.Char(default='New', readonly=1)
 
     def status_new(self):
         for rec in self:
@@ -49,6 +50,7 @@ class ToDo(models.Model):
                 )
 
     def check_due_date(self):
+        print('GGGGGGGGggg')
         for rec in self.search([]):
             if rec.due_date and rec.due_date < fields.date.today():
                 if rec.status in ['new', 'in_progress']:
@@ -56,8 +58,16 @@ class ToDo(models.Model):
                 else:
                     rec.is_late = False
 
+    @api.model
+    def create(self, vals):
+        res = super(ToDo, self).create(vals)
+        if res.ref == 'New':
+            res.ref = self.env['ir.sequence'].next_by_code('todo_seq')
+        return res
+
 class ToDOLine(models.Model):
     _name = 'todo.line'
+    _description = 'todo line'
 
     todo_id = fields.Many2one('todo.task')
     date = fields.Date()

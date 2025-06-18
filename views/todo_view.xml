@@ -1,16 +1,19 @@
 <odoo>
-
     <record id="todo_list_view" model="ir.ui.view">
         <field name="name">todo list</field>
         <field name="model">todo.task</field>
         <field name="arch" type="xml">
-            <list decoration-danger="(is_late)">
+            <list decoration-danger="(is_late)"
+                  decoration-warning="status == 'in_progress'"
+                  decoration-success="status == 'completed'"
+                  decoration-muted="status == 'closed'">
                 <field name="name"/>
+                <field name="ref"/>
                 <field name="assign_to_id"/>
                 <field name="description"/>
                 <field name="due_date"/>
                 <field name="status"/>
-                <field name="is_late" invisible="1"/>
+                <field name="is_late" column_invisible="True"/>
             </list>
         </field>
     </record>
@@ -30,20 +33,25 @@
                     <div class="oe_title">
                         <label for="name"/>
                         <h1>
-                            <field name="name"/>
+                            <field name="name" readonly="status in['completed','closed']"/>
                         </h1>
+                        <label for="ref"/>
+                        <h2>
+                            <field name="ref"/>
+                        </h2>
                     </div>
                     <group>
                         <group>
-                            <field name="assign_to_id"/>
-                            <field name="description"/>
-                            <field name="due_date"/>
-                            <field name="status"/>
-                            <field name="estimated_time"/>
+                            <field name="assign_to_id" readonly="status in['completed','closed']"/>
+                            <field name="description" readonly="status in['completed','closed']"/>
+                            <field name="due_date" readonly="status in['completed','closed']"/>
+                            <field name="status" readonly="1"/>
+                            <field name="estimated_time" readonly="status in['completed','closed']"/>
+                            <field name="is_late" readonly="1"/>
                         </group>
                         <notebook>
                             <page string="Timesheet">
-                                <field name="todo_line_ids" mode="list" context="{}">
+                                <field name="todo_line_ids" mode="list" readonly="status in['completed','closed']">
                                     <list editable="bottom">
                                         <field name="date"/>
                                         <field name="description"/>
@@ -68,9 +76,7 @@
             <search>
                 <field name="name"/>
                 <field name="assign_to_id"/>
-
                 <filter name="is_status" string="Status" domain="[('status','=','True')]"/>
-
                 <filter name="assign_to_group" string="Assign To" context="{'group_by':'assign_to_id'}"/>
                 <filter name="status" string="status" context="{'group_by':'status'}"/>
                 <filter name="due_date" string="Due Date" context="{'group_by':'due_date'}"/>
@@ -82,6 +88,7 @@
         <field name="name">Closed</field>
         <field name="model_id" ref="model_todo_task"/>
         <field name="binding_model_id" ref="model_todo_task"/>
+        <field name="groups_id" eval="[(4, ref('todo_task.todo_manager_group'))]"/>
         <field name="state">code</field>
         <field name="code">
             action = records.status_closed()
@@ -95,11 +102,11 @@
         <field name="code">model.check_due_date()</field>
         <field name="interval_number">1</field>
         <field name="interval_type">days</field>
+        <field name="active">1</field>
     </record>
 
     <record id="todo_action" model="ir.actions.act_window">
         <field name="name">ToDo</field>
         <field name="res_model">todo.task</field>
     </record>
-
 </odoo>

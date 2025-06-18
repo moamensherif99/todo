@@ -1,3 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-todo_access,todo_access,model_todo_task,,1,1,1,1
-todo_line_access,todo_line_access,model_todo_line,,1,1,1,1
+todo_access_manger,todo_access_manger,model_todo_task,todo_task.todo_manager_group,1,1,1,1
+todo_access_user,todo_access_user,model_todo_task,todo_task.todo_user_group,1,1,1,1
+todo_line_access_manger,todo_line_access_manger,model_todo_line,todo_task.todo_manager_group,1,1,1,1
+todo_line_access_user,todo_line_access_user,model_todo_line,todo_task.todo_user_group,1,1,1,1
+assign_task_access,assign_task_access,model_assign_task,,1,1,1,1

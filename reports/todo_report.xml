@@ -4,116 +4,133 @@
         <field name="model">todo.task</field>
         <field name="binding_model_id" ref="model_todo_task"/>
         <field name="binding_type">report</field>
-        <field name="report_type">qweb-pdf</field>
+        <field name="report_type">qweb-html</field>
         <field name="report_name">todo_task.todo_report_template</field>
     </record>
 
     <template id="todo_report_template">
         <t t-call="web.html_container">
-            <div class="page">
-                <t t-call="web.external_layout">
-                    <t t-foreach="docs" t-as="o">
-                        <style>
-                            table {
-                            width: 100%;
-                            border-collapse: collapse;
-                            margin-top: 20px;
-                            font-family: Arial, sans-serif;
-                            font-size: 13px;
-                            color: #333;
-                            }
-                            table th, table td {
-                            border: 1px solid #ccc;
-                            padding: 10px;
-                            text-align: left;
-                            }
-                            table th {
-                            background-color: #f2f2f2;
-                            }
-                            .label-cell {
-                            font-weight: bold;
-                            background-color: #f9f9f9;
-                            text-align: center;
-                            }
-                            .value-cell {
-                            text-align: center;
-                            }
-                        </style>
-                        <div class="row mt-4">
-                            <div class="col-6">
-                                <strong>Task:
-                                    <span t-field="o.name"/>
-                                </strong>
-                                <br/>
-                                <strong>Due Date:</strong>
-                                <span t-field="o.due_date"/>
-                                <br/>
-                                <strong>Assign To:</strong>
-                                <span t-field="o.assign_to_id"/>
-                                <br/>
-                                <strong>Estimated Time:</strong>
-                                <span t-field="o.estimated_time"/>H
-                            </div>
+            <t t-call="web.basic_layout">
+                <div class="header">
+                    <div style="border-bottom: 1px solid #000; padding-bottom: 10px;">
+                        <strong>Moamen Company</strong>
+                        <br/>
+                        Alexandria, Egypt
+                        <br/>
+                        0111444888
+                    </div>
+                </div>
+                <t t-foreach="docs" t-as="o">
+                    <style>
+                        table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-top: 20px;
+                        font-family: Arial, sans-serif;
+                        font-size: 13px;
+                        color: #333;
+                        }
+                        table th, table td {
+                        border: 1px solid #ccc;
+                        padding: 10px;
+                        text-align: left;
+                        }
+                        table th {
+                        background-color: #f2f2f2;
+                        }
+                        .label-cell {
+                        font-weight: bold;
+                        background-color: #f9f9f9;
+                        text-align: center;
+                        }
+                        .value-cell {
+                        text-align: center;
+                        }
+                    </style>
+                    <div class="row mt-4">
+                        <div class="col-6">
+                            <strong>Task:
+                                <span t-field="o.name"/>
+                            </strong>
+                            <br/>
+                            <strong>Due Date:</strong>
+                            <span t-field="o.due_date"/>
+                            <br/>
+                            <strong>Assign To:</strong>
+                            <span t-field="o.assign_to_id"/>
+                            <br/>
+                            <strong>Estimated Time:</strong>
+                            <span t-field="o.estimated_time"/>
+                            H
                         </div>
-
-                        <div class="row mt-4">
-                            <div class="col-12">
-                                <strong>Description:</strong>
-                                <br/>
-                                <p t-field="o.description"/>
-                            </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <strong>Description:</strong>
+                            <br/>
+                            <p t-field="o.description"/>
                         </div>
-                        <table>
-                            <thead>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th colspan="4" class="text-center">
+                                    <strong>Timesheet</strong>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th class="text-center">#</th>
+                                <th class="text-center">Date</th>
+                                <th class="text-center">Description</th>
+                                <th class="text-center">Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="o.todo_line_ids" t-as="rec">
                                 <tr>
-                                    <th colspan="4" class="text-center">
-                                        <strong>Timesheet</strong>
-                                    </th>
+                                    <td class="text-center">
+                                        <span t-esc="rec_index + 1"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <t t-esc="rec.date"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <t t-esc="rec.description"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <t t-esc="rec.working_time"/>
+                                        H
+                                    </td>
                                 </tr>
-                                <tr>
-                                    <th class="text-center">#</th>
-                                    <th class="text-center">Date</th>
-                                    <th class="text-center">Description</th>
-                                    <th class="text-center">Time</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <t t-foreach="o.todo_line_ids" t-as="rec">
-                                    <tr>
-                                        <td class="text-center">
-                                            <span t-esc="rec_index + 1"/>
-                                        </td>
-                                        <td class="text-center">
-                                            <t t-esc="rec.date"/>
-                                        </td>
-                                        <td class="text-center">
-                                            <t t-esc="rec.description"/>
-                                        </td>
-                                        <td class="text-center">
-                                            <t t-esc="rec.working_time"/>
-                                            H
-                                        </td>
-                                    </tr>
-                                </t>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th colspan="3" class="text-center">
-                                        <strong>Total Time</strong>
-                                    </th>
-                                    <th class="text-center">
-                                        <strong>
-                                            <span t-esc="sum(o.todo_line_ids.mapped('working_time'))"/>
-                                            H
-                                        </strong>
-                                    </th>
-                                </tr>
-                            </tfoot>
-                        </table>
-
-                    </t>
+                            </t>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-center">
+                                    <strong>Total Time</strong>
+                                </td>
+                                <td class="text-center">
+                                    <strong>
+                                        <span t-esc="sum(o.todo_line_ids.mapped('working_time'))"/>
+                                        H
+                                    </strong>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <br/>
                 </t>
-            </div>
+                <div class="footer">
+                    <div style="border-top: 1px solid #000; padding-top: 10px; width: 100%; display: flex; justify-content: space-between;">
+                        <span>moamencompany@gmail.com, 0111444888, register number</span>
+                        <span>Page
+                            <span class="page"/>
+                            /
+                            <span class="topage"/>
+                        </span>
+                    </div>
+                </div>
+            </t>
         </t>
     </template>
 </odoo>
